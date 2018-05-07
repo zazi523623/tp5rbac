@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" class="fixed">
+
+<head>
+   {include file="Public/meta" /}
+</head>
+
+<body>
+<div class="wrap">
+    {include file='Public/header' /}
+    <div class="page-body">
+        {include file="Public/sidebar" /}
+            <div class="row animated fadeInUp">
+                <div class="col-sm-12 col-lg-13">
+                    <div class="row">
+                        <div>
+                            <div class="profile-photo">
+                                <img alt="Jane Doe" src="/static/admin/images/admin.jpg">
+                            </div>
+                            <div class="user-header-info">
+                                <h2 class="user-name">{$admin_info.admin_name}</h2>
+                                <h5 class="user-position">
+                                    {$admin_info.group_name}
+                                </h5>
+                                <div class="user-social-media">
+                                    <span class="text-lg">
+                                        <a href="javascript:;" class="fa fa-twitter-square"></a> 
+                                        <a href="javascript:;" class="fa fa-facebook-square"></a> 
+                                        <a href="javascript:;" class="fa fa-linkedin-square"></a> 
+                                        <a href="javascript:;" class="fa fa-google-plus-square"></a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel bg-scale-0 b-primary bt-sm mt-xl">
+                        <div class="panel-content">
+                            <h4 class=""><b>联系信息</b></h4>
+                            <ul class="user-contact-info ph-sm">
+                                <li>
+                                    <b>
+                                        <i class="color-primary mr-sm fa fa-envelope"></i>
+                                    </b>
+                                    {$admin_info.email}
+                                </li>
+                                <li>
+                                    <b>
+                                        <i class="color-primary mr-sm fa fa-phone"></i>
+                                    </b>
+                                    {$admin_info.phone}
+                                </li>
+                                <li><b><i class="color-primary mr-sm fa fa-globe"></i></b> {$address}</li>
+                                <li class="mt-sm">Are you going to be a coward for your whole life? Or are you going to be a hero? Even for only a few minutes. You need more than just courage,but also the cries of revolution from the bottom of your heart,only to wake a few people up.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <include file="Public/right-sidebar" />
+        <a href="#" class="scroll-to-top"><i class="fa fa-angle-double-up"></i></a>
+    </div>
+</div>
+{include file="Public/footer" /}
+</body>
+</html>
+<script type="text/javascript">
+    $(function(){
+        $('#receive').on('click', function(){
+             swal({ 
+              title: "确定领取钻石吗？", 
+              text: "每天只可领取一次钻石！", 
+              type: "warning",
+              showCancelButton: true, 
+              confirmButtonColor: "#DD6B55",
+              confirmButtonText: "确定领取", 
+              closeOnConfirm: false
+             },
+             function(){
+                $.ajax({
+                    url:'/Admin/Index/receive_currency',
+                    type:'post',
+                    success:function(result){
+                        if (result.code == 1000) {
+                           $(".admion_game_currency").html(result.data.receive_number);
+                           swal("操作成功", "领取钻石成功！", "success"); 
+                        } else {
+                           swal("操作失败", result.msg, "error"); 
+                        }
+                    }
+                })
+            });  
+        });
+    });
+</script>

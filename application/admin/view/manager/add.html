@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en" class="fixed">
+
+<head>
+    {include file='Public/meta' /}
+</head>
+
+<body>
+<div class="wrap">
+    {include file="Public/header" /}
+
+    <div class="page-body">
+        {include file='Public/sidebar' /}
+            <div class="row animated fadeInRight">
+                <div class="col-sm-12">
+                    <h4 class="section-subtitle"><b>添加管理员</b></h4>
+                    <div class="panel">
+                        <div class="panel-content">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form id="inline-validation" class="form-horizontal form-stripe" novalidate="novalidate">
+                                        <div class="form-group">
+                                            <label for="manager_name" class="col-sm-3 control-label">管理员账号<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                                <span class="input-with-icon">
+                                                    <input type="text" class="form-control" id='manager_name' aria-required="true">
+                                                    <i class="fa fa-user"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="manager_nickname" class="col-sm-3 control-label">管理员昵称<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                                <span class="input-with-icon">
+                                                    <input type="text" class="form-control" id='manager_nickname' aria-required="true">
+                                                    <i class="fa fa-address-card-o"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password" class="col-sm-3 control-label">管理员密码<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                                <span class="input-with-icon">
+                                                    <input type="password" class="form-control" id="password" name="password"  aria-required="true">
+                                                    <i class="fa fa-lock"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="repassword" class="col-sm-3 control-label">确认密码<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                                <span class="input-with-icon">
+                                                    <input type="password" class="form-control" id="repassword" name="repassword"  aria-required="true">
+                                                    <i class="fa fa-lock"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="phone" class="col-sm-3 control-label">手机号码<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                                <span class="input-with-icon">
+                                                    <input type="text" class="form-control" id="phone" maxlength='11' minlength="11" required="" aria-required="true">
+                                                    <i class="fa fa-phone"></i>
+                                                </span>
+                                               
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email" class="col-sm-3 control-label">邮箱<span class="required" aria-required="true"></span></label>
+                                            <div class="col-sm-6">
+                                                <span class="input-with-icon">
+                                                    <input type="text" class="form-control" id="email" required="" aria-required="true">
+                                                    <i class="fa fa-envelope"></i>
+                                                </span>
+                                               
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-3 col-sm-9">
+                                                <button type="button" id='submit_form' class="btn btn-primary">
+                                                    提交
+                                                </button>
+                                                
+                                                <button type="reset" class="btn btn-wide" onclick="window.history.back()">
+                                                    返回列表
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {include file='Public/right-sidebar' /}
+        <a href="#" class="scroll-to-top"><i class="fa fa-angle-double-up"></i></a>
+    </div>
+</div>
+{include file='Public/footer' /}
+<script type="text/javascript">
+    $(function(){
+        //提交表单
+        $('#submit_form').on('click',function(){
+            var manager_name = $('#manager_name').val();
+            var manager_nickname = $('#manager_nickname').val();
+            var password = $('#password').val();
+            var repassword = $('#repassword').val();
+            var phone = $('#phone').val();
+            var email = $('#email').val();
+
+            /*if (manager_name == '') {
+                swal("操作失败", '管理员账号不能为空！',"error");
+                return false;
+            }
+
+            if (manager_nickname == '') {
+                swal("操作失败", '管理员昵称不能为空！',"error");
+                return false;
+            }
+
+            if (password == '') {
+                swal("操作失败", '密码不能为空！',"error");
+                return false;
+            }
+
+            if (password != repassword) {
+                 swal("操作失败", '两次密码输入不一致！',"error");
+                 return false;
+            }
+
+            if (phone == '') {
+                swal("操作失败", '手机号码不能为空！',"error");
+                return false;
+            }
+*/
+            $.ajax({
+                url:"/Admin/manager/add",
+                type:'post',
+                data:{'manager_name':manager_name,'manager_nickname':manager_nickname,'password':password,'repassword':repassword,'phone':phone,'email':email},
+                success:function(result){
+                    if (result.code == 1000) {
+                         swal({ 
+                          title: "操作成功", 
+                          text: "即将返回到列表...", 
+                          type: "success",
+                          timer: 1500, 
+                          showConfirmButton: false 
+                        }, function(){
+                            window.location.href="/Admin/Manager/index";
+                        });
+                    } else {
+                         swal("操作失败", result.msg,"error");
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

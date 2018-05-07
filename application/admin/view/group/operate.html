@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" class="fixed">
+
+<head>
+    {include file='Public/meta' /}
+    <style type="text/css">
+        .pt-sm{
+            display: inline;
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+<div class="wrap">
+    {include file="Public/header" /}
+    <div class="page-body">
+        {include file='Public/sidebar' /}
+            <div class="row animated fadeInRight">
+                   <div class="col-sm-12">
+                    <h4 class="section-subtitle"><b>{$action_name}</b></h4>
+                    <div class="panel">
+                        <div class="panel-content">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form id="form" submit_action="{$action}" val_id="{$info.role_id|default=0}" class="form-horizontal form-stripe" novalidate="novalidate">
+                                        <div class="form-group">
+                                            <label for="name" class="col-sm-3 control-label">权限组名称<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                               <input type="text" class="form-control" id="name" name="name" min='1'  aria-required="true" value="{$info.role_name|default=''}">
+                                            </div>
+                                        </div>
+                                  
+                                        <div class="form-group">
+                                            <label for="status" class="col-sm-3 control-label">权限组状态<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                               <div class="radio radio-custom radio-success pt-sm">
+                                                    <input type="radio" id="position-top-right" name="status" value="1" checked {if !empty($info.status)}{eq name='$info.status' value="1" }checked{/eq}{/if}>
+                                                    <label for="position-top-right">启用</label>
+                                                </div>
+                                                <div class="radio radio-custom radio-danger pt-sm">
+                                                    <input type="radio" id="type-danger" name="status" value="2" {if !empty($info.status)}{eq name='$info.status' value="2" }checked{/eq}{/if}>
+                                                    <label for="type-danger">禁用</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-3 col-sm-9">
+                                                <button type="button" id='submit_form' class="btn btn-primary">
+                                                    提交
+                                                </button>
+                                                
+                                                <button type="reset" class="btn btn-wide" onclick="window.history.back()">
+                                                    返回列表
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>   
+            </div>
+        <include file='Public/right-sidebar' />
+        <a href="#" class="scroll-to-top"><i class="fa fa-angle-double-up"></i></a>
+    </div>
+</div>
+{include file='Public/footer' /}
+<script type="text/javascript">
+
+    $(function(){
+         //提交表单
+        $('#submit_form').on('click', function(){
+            var name = $('#name').val();
+            var status = $("input[name='status']:checked").val();
+            var action = $('#form').attr('submit_action');
+            var val_id = $('#form').attr('val_id');
+
+            $.ajax({
+                url:"/Admin/Group/operate",
+                type:'post',
+                data:{'name':name,'status':status,'action':action,'val_id':val_id},
+                success:function(result){
+                    if (result.code == 1000) {
+                         swal({ 
+                          title: "操作成功", 
+                          text: "即将返回到列表...", 
+                          type: "success",
+                          timer: 1500, 
+                          showConfirmButton: false 
+                        }, function(){
+                            window.location.href="/Admin/Group/index";
+                        });
+                    } else {
+                         swal("操作失败", result.msg,"error");
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

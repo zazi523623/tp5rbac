@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" class="fixed">
+
+<head>
+    {include file='Public/meta' /}
+</head>
+
+<body>
+<div class="wrap">
+    {include file="Public/header" /}
+
+    <div class="page-body">
+        {include file='Public/sidebar' /}
+            <div class="row animated fadeInRight">
+                <div class="col-sm-12">
+                    <h4 class="section-subtitle"><b>管理员列表</b></h4>
+                    <div class="panel">
+                        <div class="panel-content">
+                            <div class='row'>
+                                <div class="col-sm-12">
+                                    <form action="__URL__" method='get' class='search_form'>
+                                        管理员ID：
+                                        <input type='text' name='manager_id' class='form-control input-sm' placeholder='请输入管理员ID' value="{$Think.get.manager_id}" />
+                                        管理员昵称：
+                                        <input type='text' name='manager_name' class='form-control input-sm' placeholder='请输入管理员昵称' value="{$Think.get.manager_name}" />
+                                        账号状态：
+                                        <select name='status'  class='form-control'>
+                                            <option value='0' {eq name="$Think.get.status" value="0"}selected='selected'{/eq}>所有</option>
+                                            <option value='1' {eq name="$Think.get.status" value="1"}selected='selected'{/eq}>正常</option>
+                                            <option value='2' {eq name="$Think.get.status" value="2"}selected='selected'{/eq}>屏蔽</option>
+                                        </select>     
+                                        <button class='btn btn-primary search_button'>搜索</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table id="basic-table" class="data-table table table-striped nowrap table-hover" cellspacing="0" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th>管理员ID</th>
+                                        <th>管理员账号</th>
+                                        <th>管理员昵称</th>
+                                        <th>所属权限组</th>
+                                        <th>手机号码</th>
+                                        <th>状态</th>
+                                        <th>最后一次登陆时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {volist name='managers' id='vo'}
+                                        <tr id="{$vo.admin_id}">
+                                            <td>{$vo.admin_id}</td>
+                                            <td>{$vo._html|default=''}{$vo.admin_name}</td>
+                                            <td>{$vo.admin_nickname}</td>
+                                            <td>{$vo.role_name}</td>
+                                            <td>{$vo.phone}</td>
+                                            <td>
+                                                 {if $vo.status eq 1}
+                                                    <i class='fa fa-check change_status'>
+                                                    </i>
+                                                 {else /}
+                                                    <i class='fa fa-close change_status'>
+                                                    </i>
+                                                 {/if}
+                                            </td>
+                                            <td>{$vo.last_login_time|date='Y-m-d',###}</td>
+                                            <td>
+                                                {if $manager_edit}
+                                                    <a href="{:url('manager/edit', array('manager_id' => $vo['admin_id']))}">
+                                                        <button class="btn btn-lighter-1">
+                                                             <i class='fa fa-pencil-square-o'></i> 编辑
+                                                        </button>
+                                                    </a>
+                                                {/if}
+                                                
+                                            
+                                                {if $manager_delete}
+                                                    {if $vo.level neq 1}
+                                                        <button class="btn btn-danger delete_admin">
+                                                            <i class='fa fa-trash'></i> 删除
+                                                        </button>
+                                                    {/if}
+                                                {/if}
+                                            </td>
+                                        </tr>
+                                    {/volist}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                      
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {include file='Public/right-sidebar' /}
+        <a href="#" class="scroll-to-top"><i class="fa fa-angle-double-up"></i></a>
+    </div>
+</div>
+{include file='Public/footer' /}
+<script type="text/javascript">
+    $(function(){
+        //屏蔽或启用管理员
+        $('.change_status').on('click', function(){
+            var _this = $(this);
+            var manager_id = $(this).parent().parent().attr('id');
+
+            $.ajax({
+                    url:'/Admin/manager/yesOrNo',
+                    type:'post',
+                    data:{manager_id:manager_id},
+                    datatype:'json',
+                    success:function(result){
+                        if (result.code == 1000) {
+                            if (result.msg == 'yes') {
+                               _this.removeClass('fa-close');
+                               _this.addClass('fa-check');
+                            } else {
+                                _this.removeClass('fa-check');
+                               _this.addClass('fa-close');
+                            }
+                        } else {
+                            swal("操作失败", result.msg, "error");
+                        }
+                    }
+            });
+        });
+
+        //删除管理员
+        $('.delete_admin').on('click', function(){
+             var _this = $(this);
+             var manager_id = $(this).parent().parent().attr('id');
+             swal({ 
+              title: "确定删除吗？", 
+              text: "你确定要删除该管理员吗？", 
+              type: "warning",
+              showCancelButton: true, 
+              confirmButtonColor: "#DD6B55",
+              confirmButtonText: "确定删除", 
+              closeOnConfirm: false
+             },
+             function(){
+                    $.ajax({
+                        url:'/Admin/manager/del',
+                        type:'post',
+                        data:{manager_id:manager_id},
+                        datatype:'json',
+                        success:function(result){
+                            if (result.code == 1000) {
+                               _this.parent().parent().remove();
+                               swal("操作成功", "管理员删除成功！", "success"); 
+                            } else {
+                               swal("操作失败", result.msg, "error"); 
+                            }
+                        }
+                   });
+            });  
+        });
+    });
+</script>
+</body>
+</html>

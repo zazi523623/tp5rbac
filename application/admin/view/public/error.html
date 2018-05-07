@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" class="fixed">
+
+<head>
+   {include file="Public/meta" /}
+   <style type="text/css">
+        .error_icon{
+            color: #d2322d;
+        }
+        .error-name{
+            font-size: 3rem;
+        }
+        .error-text{
+            font-size: 1.5rem;
+        }
+        .error_btn{
+            font-size: 1.2rem;
+        }
+        
+   </style>
+</head>
+
+<body>
+<div class="wrap">
+    {include file='Public/header' /}
+    <div class="page-body">
+        {include file="Public/sidebar" /}
+            <div class="row animated fadeInUp">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div class="panel mt-xlg">
+                        <div class="panel-content">
+                            <h1 class="error-number">
+                                <div class="panel-content">
+                                    <span class="icon fa fa-warning error_icon"></span>
+                                </div>
+                            </h1>
+                            <h2 class="error-name">错误</h2>
+                            <p class="error-text">
+                                {$msg}，<span id='time'>{$wait}</span>秒后自动跳转...
+                                <div class="spinner">
+                                  <div class="bounce1"></div>
+                                  <div class="bounce2"></div>
+                                  <div class="bounce3"></div>
+                                </div>
+                            </p>
+                            <div class="row mt-lg">
+                                <div class="col-sm-6  col-sm-offset-3">
+                                    <a href="{$url}" class="btn btn-sm btn-primary btn-block error_btn">
+                                        立即跳转
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {include file="Public/right-sidebar" /}
+        <a href="#" class="scroll-to-top"><i class="fa fa-angle-double-up"></i></a>
+    </div>
+</div>
+{include file="Public/footer" /}
+<script type="text/javascript">
+    var time = $('#time').html();
+    var url = $('.error_btn').attr('href');
+    setInterval("jump()", 1000);
+
+    function jump(){
+            time--;
+
+            if (time < 1) {
+                window.location.href = url;
+            }
+
+            $("#time").html(time);
+    }
+</script>
+</body>
+</html>

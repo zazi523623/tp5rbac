@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en" class="fixed">
+
+<head>
+   {include file="Public/meta" /}
+   <style type="text/css">
+        .rule_list_title h5{
+            font-size: 2rem;font-weight: bold;
+            display: inline;
+            text-align: center;
+        }
+        .rule_list_title button{
+            float: right;
+            display: inline;
+        }
+        .btn-group a{
+            margin-bottom: 0 !important;
+        }
+        .btn-group button{
+            margin-bottom: 0 !important;
+        }
+        .save_select {
+            margin: 0 50%;
+        }
+   </style>
+</head>
+
+<body>
+<div class="wrap">
+    {include file='Public/header' /}
+    <div class="page-body">
+        {include file="Public/sidebar" /}
+            <div class="row animated fadeInUp">
+                <div class="col-sm-12 rule_list_title">
+                    <h5 class='section-subtitle' group_id="{$Request.param.val_id}">访问授权</h5>
+                    <button class="btn btn-primary" onclick="window.history.go(-1)">返回列表</button>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel-header">
+                            <h3 class="panel-title">
+                                <div class="checkbox-custom checkbox-primary">
+                                    <input type="checkbox" flag='1' id="select_all">
+                                    <label class="check" for="select_all" style="margin-bottom: 2rem">   全部选中
+                                    </label>
+                                </div>
+                            </h3>
+                        </div>
+                        {volist name='rules' id='ctrl'}
+                            <div class="panel">
+                                <div class="panel-header">
+                                    <h3 class="panel-title">
+                                        <div class="checkbox-custom checkbox-primary">
+                                            <input class='Authorization ctrl_check' type="checkbox" id="check-simple{$ctrl.rule_id}" value="{$ctrl.rule_id}" <?php if(in_array($ctrl['rule_id'], $roleRuleArray)) echo 'checked';?>>
+                                            <label class="check" for="check-simple{$ctrl.rule_id}">   {$ctrl.rule_name}
+                                            </label>
+                                        </div>
+                                    </h3>
+                                </div>
+                                <div class="panel-content">
+                                    <div class="widget-list list-to-do">
+                                        <ul>
+                                            {if isset($ctrl.son)}
+                                                {volist name='ctrl.son' id='method'}
+                                                    <li>
+                                                        <div class="checkbox-custom checkbox-primary">
+                                                            <input class='Authorization method_check' type="checkbox" id="check-simple{$method.rule_id}" value="{$method.rule_id}" {if in_array($method['rule_id'], $roleRuleArray)}checked{/if}>
+                                                            <label class="check" for="check-simple{$method.rule_id}">   {$method.rule_name}
+                                                            </label>
+                                                        </div>
+                                                        <div class="panel-content p-none">
+                                                            <div class="widget-list list-to-do">
+                                                                <ul>
+                                                                    {if isset($method.son)}
+                                                                        {volist name='method.son' id='action'}
+                                                                            <li>
+                                                                                <div class="checkbox-custom checkbox-primary">
+                                                                                    <input class='Authorization action_check' type="checkbox" id="check-simple{$action.rule_id}" value="{$action.rule_id}" {if in_array($action['rule_id'], $roleRuleArray)}checked{/if}>
+                                                                                    <label class="check" for="check-simple{$action.rule_id}">{$action.rule_name}</label>
+                                                                                </div>
+                                                                            </li>
+                                                                        {/volist}
+                                                                    {/if}
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                {/volist}
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                </div>
+                            </div>
+                        {/volist}
+                        <button class="btn btn-primary save_select">保存修改</button>
+                    </div>
+                </div>
+            </div>
+        {include file="Public/right-sidebar" /}
+        <a href="#" class="scroll-to-top"><i class="fa fa-angle-double-up"></i></a>
+    </div>
+</div>
+{include file="Public/footer" /}
+</body>
+</html>
+<script type="text/javascript">
+    $(function(){
+       //取消文本横线
+       $('.check').css('text-decoration', 'none');
+       //全部选中
+       $('#select_all').on('click', function(){
+            var _this = $(this);
+
+            if (this.checked) {
+                _this.next().html('全部不选');   
+                $(".Authorization").prop("checked", true);  
+            } else {
+                _this.next().html('全部选中');   
+                $(".Authorization").prop("checked", false);
+            }   
+       });
+    });
+
+    //控制器选中同时选中子类复选框
+    $('.ctrl_check').on('click', function(){
+        var _this = $(this);
+
+        if (this.checked) {
+            _this.parent().parent().parent().next().find('.Authorization').prop('checked', true);
+        } else {
+            _this.parent().parent().parent().next().find('.Authorization').prop('checked', false);
+        }
+    });
+
+    //方法选中同时选中子类复选框
+    $('.method_check').on('click', function(){
+        var _this = $(this);
+
+        if (this.checked) {
+            _this.parents().eq(5).find('.ctrl_check').eq(0).prop('checked', true);
+            _this.parent().parent().find('.Authorization').prop('checked', true);
+        } else {
+            _this.parent().parent().find('.Authorization').prop('checked', false);
+        }
+    });
+
+    //行为选中选中父类复选框
+    $('.action_check').on('click', function(){
+        var _this = $(this);
+
+        if (this.checked) {
+            _this.parents().eq(9).find('.ctrl_check').eq(0).prop('checked', true);
+            _this.parent().parent().parent().parent().parent().parent().find('.method_check').prop('checked', true);
+        }
+    });
+
+    //保存提交
+    $('.save_select').on('click', function(){
+        var selectboxs = $(".Authorization:checked");
+        var ids = '';
+
+        for (var i = 0; i < selectboxs.length; i++) {
+            ids += selectboxs.eq(i).val()+',';
+        }
+
+        ids = ids.substring(0,ids.length-1);
+        var group_id = $('.section-subtitle').attr('group_id');
+
+        $.ajax({
+            url:'/Admin/Group/authorize',
+            type:'post',
+            data:{'group_id':group_id,'ids':ids},
+            success:function(result){
+                if (result.code == 1000) {
+                    swal({ 
+                          title: "操作成功", 
+                          text: "即将返回到列表...", 
+                          type: "success",
+                          timer: 1500, 
+                          showConfirmButton: false 
+                        }, function(){
+                            window.location.href="/Admin/Group/index";
+                        });
+                } else {
+                    swal("操作失败", result.msg, "error");
+                }
+            }
+        });
+    });
+
+</script>

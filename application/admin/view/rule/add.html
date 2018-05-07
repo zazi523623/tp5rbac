@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en" class="fixed">
+
+<head>
+    {include file='Public/meta' /}
+    <style type="text/css">
+        .radio{
+            display: inline;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+<div class="wrap">
+    {include file="Public/header" /}
+
+    <div class="page-body">
+        {include file='Public/sidebar' /}
+            <div class="row animated fadeInRight">
+                <div class="col-sm-12">
+                    <h4 class="section-subtitle"><b>添加{$typename}</b></h4>
+                    <div class="panel">
+                        <div class="panel-content">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form id="form" type='{$type}' class="form-horizontal form-stripe" novalidate="novalidate">
+                                        <div class="form-group">
+                                            <label for="pid" class="col-sm-3 control-label">上级菜单<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                                <select name='pid' id='pid' class="form-control select2-hidden-accessible" disabled>
+                                                    {if condition="$parent_rule_id eq 0"}
+                                                        <option value='0'>顶级菜单</option>
+                                                    {else /}
+                                                        <option value="{$parent_rule_id}">{$parent_rule_name}</option>
+                                                    {/if}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name" class="col-sm-3 control-label">规则名称<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" id='name' name='name' aria-required="true">
+                                            </div>
+                                        </div>
+                                        {if $type eq 'ctrl'}
+                                            <div class="form-group">
+                                                <label for="icon" class="col-sm-3 control-label">规则图标<span class="required" aria-required="true">*</span></label>
+                                                <div class="col-sm-6">
+                                                    <input type="text" class="form-control" id="icon" name="icon"  aria-required="true">
+                                                    <span class="help-block">
+                                                        <i class="fa fa-info-circle mr-xs"></i>fontawesome图标库的icon例如：<span class="code">fa-user</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        {/if}
+                                        <div class="form-group">
+                                            <label for="path" class="col-sm-3 control-label">规则全路径<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                                <input type="text" class="form-control" id="path" name="path"  aria-required="true">
+                                                <span class="help-block">
+                                                    <i class="fa fa-info-circle mr-xs"></i>控制器/方法路径例如：<span class="code">Rule/index</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="order" class="col-sm-3 control-label">规则排序<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                                <input type="number" class="form-control" id="order" name="order" value="0" required="" aria-required="true">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="phone" class="col-sm-3 control-label">规则状态<span class="required" aria-required="true">*</span></label>
+                                            <div class="col-sm-6">
+                                                <div class="radio radio-custom radio-success">
+                                                    <input type="radio" class="form-control" name="status" value="1" id='radioCustom1' required="" aria-required="true" checked>
+                                                    <label for='radioCustom1'>启用</label>
+                                                </div>
+                                                <div class="radio radio-custom radio-danger">
+                                                    <input type="radio" id="radioCustom" name="status" value="2">
+                                                    <label for="radioCustom">禁用</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-3 col-sm-9">
+                                                <button type="button" id='submit_form' class="btn btn-primary">
+                                                    提交
+                                                </button>
+                                                
+                                                <button type="reset" class="btn btn-wide" onclick="window.history.back()">
+                                                    返回列表
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {include file='Public/right-sidebar' /}
+
+        <a href="#" class="scroll-to-top"><i class="fa fa-angle-double-up"></i></a>
+    </div>
+</div>
+{include file='Public/footer' /}
+<script type="text/javascript">
+    $(function(){
+        //提交表单
+        $('#submit_form').on('click',function(){
+            var pid = $('#pid').val();
+            var name = $('#name').val();
+            var icon = $('#icon').val();
+            var path = $('#path').val();
+            var order = $('#order').val();
+            var status = $("input[name='status']:checked").val();
+            var type = $('#form').attr('type');
+
+           /* if (name == '') {
+                swal("操作失败", '规则名称不能为空！',"error");
+                return false;
+            }
+
+            if (path == '') {
+                swal("操作失败", '规则路径不能为空！',"error");
+                return false;
+            }*/
+
+            $.ajax({
+                url:"/Admin/Rule/add",
+                type:'post',
+                data:{'pid':pid,'name':name,'icon':icon,'path':path,'order':order,'status':status,'type':type},
+                success:function(result){
+                    if (result.code == 1000) {
+                        swal({ 
+                          title: "操作成功", 
+                          text: "添加规则成功，即将返回到列表...", 
+                          type: "success",
+                          timer: 1500, 
+                          showConfirmButton: false 
+                        }, function(){
+                            window.location.href="/Admin/Rule/index";
+                        });
+                    } else {
+                         swal("操作失败", result.msg,"error");
+                    }
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

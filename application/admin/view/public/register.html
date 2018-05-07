@@ -1,0 +1,145 @@
+
+<!doctype html>
+<html lang="en" class="fixed accounts sign-in">
+
+<head>
+    <include file='Public/meta' />
+</head>
+
+<body>
+<div class="wrap">
+    <!-- page BODY -->
+    <!-- ========================================================= -->
+    <div class="page-body animated slideInDown">
+        <!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
+        <!--LOGO-->
+        <div class="logo">
+             <div class='top-logo'>
+                  My Admin
+             </div>
+        </div>
+        <div class="box">
+            <!--SIGN IN FORM-->
+            <div class="panel mb-none">
+                <div class="panel-content bg-scale-0">
+                    <form>
+                        <div class="form-group mt-md">
+                            <span class="input-with-icon">
+                                <input type="text" class="form-control" name='name' id="name" placeholder="请输入用户名">
+                                <i class="fa fa-user"></i>
+                            </span>
+                        </div>
+                        <div class="form-group mt-md">
+                            <span class="input-with-icon">
+                                <input type="email" class="form-control" name='mobile' id="mobile" placeholder="请输入手机号码" maxlength="11">
+                                <i class="fa fa-mobile"></i>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="input-with-icon">
+                                <input type="password" class="form-control" name='password' id="password" placeholder="请输入密码">
+                                <i class="fa fa-key"></i>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="input-with-icon">
+                                <input type="password" class="form-control" name='repassword' id="repassword" placeholder="确认密码">
+                                <i class="fa fa-key"></i>
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <span class="input-with-icon">
+                                <input type="text" class="form-control" name='invite' id="invite" placeholder="请输入邀请码">
+                                <i class="fa fa-barcode"></i>
+                            </span>
+                        </div>
+                        <!--
+                        <div class="form-group">
+                            <div class="checkbox-custom checkbox-primary">
+                                <input type="checkbox" id="terms" value="option1">
+                                <label class="check" for="terms">I agree </label>  to the <a href="#">Terms and Conditions</a>
+                            </div>
+                        </div>
+                        -->
+                        <div class="form-group">
+                            <a href="javascript:;" class="btn btn-primary btn-block register_btn">注册</a>
+                        </div>
+                        <div class="form-group text-center">
+                            已经注册过账号了? <a href="{:U('Public/login')}">登陆</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<include file="Public/footer" />
+</body>
+    <script type="text/javascript">
+        $(function(){
+            $('.register_btn').click(function(){
+                register();
+            })
+            $(document).keydown(function(event){ 
+                if(event.keyCode == 13){
+                    register();
+                }
+            }); 
+        });
+
+        function register(){
+            var name = $("#name").val();
+            var mobile = $('#mobile').val();
+            var password = $('#password').val();
+            var repassword = $('#repassword').val();
+            var invite = $('#invite').val();
+
+            if(name == ""){
+                $('#name').focus();
+                return false;
+            }
+
+            if(password == ""){
+                $('#password').focus();
+                return false;
+            }
+
+            if (repassword == "") {
+                $('#repassword').focus();
+                return false;
+            }
+
+             if (mobile == "") {
+                $('#mobile').focus();
+                return false;
+            }
+
+            $.ajax({
+                type:'post',
+                url:'/Admin/Public/register',
+                data:{'name':name,'password':password,'repassword':repassword,'mobile':mobile,'invite':invite},
+                success:function(result){
+                    if (result.code == 1000) {
+                        swal({ 
+                          title: "注册成功", 
+                          text: "等待管理员审核...", 
+                          type: "success",
+                          timer: 1500, 
+                          showConfirmButton: false 
+                        }, function(){
+                            window.location.href="/Admin/Public/login";
+                        });
+                    } else {
+                        swal({ 
+                          title: "注册失败", 
+                          text: result.msg, 
+                          type: "error",
+                          timer: 2000, 
+                          showConfirmButton: false 
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+</html>

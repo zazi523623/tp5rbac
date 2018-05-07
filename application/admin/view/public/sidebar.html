@@ -1,0 +1,78 @@
+<div class="left-sidebar">
+    <div class="left-sidebar-header">
+        <div class="left-sidebar-title">Navigation</div>
+        <div class="left-sidebar-toggle c-hamburger c-hamburger--htla hidden-xs" data-toggle-class="left-sidebar-collapsed" data-target="html">
+            <span></span>
+        </div>
+    </div>
+    <div id="left-nav" class="nano">
+        <div class="nano-content">
+            <nav>
+                <ul class="nav" id="main-nav">
+                    {if !empty($menus)}
+                        {volist name='menus' id='vo'}
+                            {if !empty($vo.son)}
+                                <li class="has-child-item close-item">
+                                    <a>
+                                        <i class="fa {$vo.rule_icon}" aria-hidden="true"></i>
+                                        <span>{$vo.rule_name}</span>
+                                    </a>
+                                    <ul class="nav child-nav level-1">
+                                        {volist name="vo['son']" id='son'}
+                                            <li><a href="{:url($son['rule_method'])}">{$son.rule_name}</a></li>
+                                        {/volist}
+                                    </ul>
+                                </li>
+                            {else /}
+                                <li>
+                                    <a href="{:url($vo['rule_method'])}">
+                                        <i class="fa {$vo.rule_icon}" aria-hidden="true"></i><span>{$vo.rule_name}</span>
+                                    </a>
+                                </li>
+                            {/if}
+                        {/volist}
+                    {/if}
+                </ul>
+            </nav>
+        </div>
+        <div class="nano-pane" style="display: block;">
+            <div class="nano-slider" style="height: 184px; transform: translate(0px, 0px);">
+            </div>
+        </div>
+    </div>
+</div>
+<!--内容版块拼接开始-->
+<div class="content">
+            <div class="content-header">
+                <div class="leftside-content-header">
+                    <ul class="breadcrumbs">
+                        {if !empty($menus)}
+                            {volist name='navs' id='vo'}
+                                <li>
+                                    <i class="fa {$vo.rule_icon}" aria-hidden="true"></i>
+                                    {if condition="$vo.rule_level eq 2"}
+                                        <a href="{:url($vo['rule_method'])}">{$vo.rule_name}</a>
+                                    {else /}
+                                        <a href="javascript:;">{$vo.rule_name}</a>
+                                    {/if}
+                                </li>
+                            {/volist}
+                        {/if}
+                    </ul>
+                </div>
+            </div>
+<script src="__ADMIN__/javascripts/jquery.min.js"></script>
+<script type="text/javascript">
+    //左边栏菜单高亮
+    url = window.location.pathname;
+    
+    parent_url = "{:url($parent_path)}";
+
+    if (parent_url) {
+        $('#main-nav').find("a[href='"+parent_url+"']").parent().addClass('active-item');
+        $('#main-nav').find("a[href='"+parent_url+"']").parent().parent().parent().addClass('open-item active-item');
+    } else {
+        $('#main-nav').find("a[href='"+url+"']").parent().addClass('active-item');
+        $('#main-nav').find("a[href='"+url+"']").parent().parent().parent().addClass('open-item active-item');
+    }
+</script>
