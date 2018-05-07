@@ -1,0 +1,65 @@
+.top-logo {
+    text-align: center;
+    font-size: 3rem;
+}
+
+.top-title {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    color: #FFFFFF;
+    font-size: 2rem;
+}
+
+textarea {
+    resize: none;
+}
+
+.fa-check {
+    font-size: 1.5rem;
+    color: #719a32;
+}
+
+.fa-close {
+    font-size: 1.5rem;
+    color: #b02a26;
+}
+
+.menu_button {
+    float: right;
+    margin-left: 1rem;
+}
+
+.pagination {
+    float: right;
+}
+
+.search_button {
+    margin-left: 1rem;
+}
+
+.page a, .current {
+    padding: 0.6rem;
+    line-height: 1.42857143;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.current {
+    color: #fff;
+    background-color: #428bca;
+    border-color: #428bca;
+    cursor: default;
+}
+
+.search_form input{
+    width: 15rem;
+    display: inline;
+}
+.search_form select{
+    padding: 0;
+    width: 15rem;
+    display: inline;
+}
+#clear_cache{
+    cursor:pointer;
+}
