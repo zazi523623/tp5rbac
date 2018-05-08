@@ -27,7 +27,7 @@
                                                     <i class="fa fa-user"></i>
                                                 </span>
                                             </div>
-                                            <button class="btn btn-success" id='copy' type='button' data-clipboard-action="copy" data-clipboard-target="#admin_id"><i class='fa fa-files-o'></i> 点击复制
+                                            <button class="btn btn-success" id='copy' type='button' data-clipboard-action="copy" data-clipboard-target="#manager_id"><i class='fa fa-files-o'></i> 点击复制
                                             </button>
                                         </div>
                                         <div class="form-group">
@@ -78,13 +78,11 @@
                                                 <input type="text" class="form-control" id="email" value="{$info.email}" required="" aria-required="true">
                                             </div>
                                         </div>
-                                        <input type='hidden' id='manager_id' level="{$admin_info.level}" value="{$info.admin_id}" />
                                         <div class="form-group">
                                             <div class="col-sm-offset-3 col-sm-9">
                                                 <button type="button" id='submit_form' class="btn btn-primary">
                                                     提交
                                                 </button>
-                                                
                                                 <button type="reset" class="btn btn-wide" onclick="window.history.back()">
                                                     返回列表
                                                 </button>

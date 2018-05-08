@@ -84,6 +84,8 @@ class AdminBase extends Controller
             Cache::set('admin_menus', $menus);
         }
 
+        $this->my_rules = serialize($menus);
+
         if ($this->admin_info['level'] !=1 ) {
             if (!stripos($this->my_rules, $this->path)) {
                 return $this->Response('无权限访问！');
